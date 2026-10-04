@@ -70,8 +70,8 @@
       <section class="builder" id="builder">
         <aside class="panel">
           <div class="panel-top"><h2>Что у вас есть?</h2><span class="step-label">подбор сразу</span></div>
-          <p class="hint">Отмечайте всё, что есть в холодильнике и шкафах. Строгий режим покажет рецепты, где отмечены все обязательные продукты. В нестрогом достаточно совпадения по продуктам; если выбраны и мясо, и гарнир, рецепт должен содержать выбранное мясо и хотя бы один выбранный гарнир. Недостающие овощи, молочные продукты и соусы будут отмечены в карточке.</p>
-          <div class="match-control"><div class="mode-toggle" role="group" aria-label="Режим подбора"><button class="mode-btn active" data-match="strict" aria-pressed="true">Строгий</button><button class="mode-btn" data-match="flex" aria-pressed="false">Нестрогий</button></div></div>
+          <p class="hint">Отмечайте всё, что есть в холодильнике и шкафах. В нестрогом режиме достаточно совпадения по продуктам; если выбраны и мясо, и гарнир, рецепт должен содержать выбранное мясо и хотя бы один выбранный гарнир. Недостающие овощи, молочные продукты и соусы будут отмечены в карточке. Строгий режим покажет только рецепты, где отмечены все обязательные продукты.</p>
+          <div class="match-control"><div class="mode-toggle" role="group" aria-label="Режим подбора"><button class="mode-btn active" data-match="flex" aria-pressed="true">Нестрогий</button><button class="mode-btn" data-match="strict" aria-pressed="false">Строгий</button></div></div>
           <div class="ingredients" id="ingredients"></div>
           <div class="selected-line"><span id="selectedText">Отмечено продуктов: 0</span></div>
           <p class="microcopy">Результаты обновляются сразу. Специи и соль указаны в рецептах, но не влияют на подбор.</p>
@@ -128,7 +128,7 @@ const selected=new Set();
 const selectedSeasonings=new Set();
 const meatIngredients=new Set(['Курица','Куриный фарш','Свинина','Сосиски','Колбаса']);
 const sideIngredients=new Set(['Гречка','Рис','Пшено','Перловка','Булгур','Макароны','Вермишель','Картофель']);
-let method='all',maxTime=999,matchMode='strict',showSaved=false;let saved=new Set();try{saved=new Set(JSON.parse(localStorage.getItem('iz-togo-saved')||'[]').map(Number))}catch{}
+let method='all',maxTime=999,matchMode='flex',showSaved=false;let saved=new Set();try{saved=new Set(JSON.parse(localStorage.getItem('iz-togo-saved')||'[]').map(Number))}catch{}
 const ingredientsEl=document.querySelector('#ingredients'),cardsEl=document.querySelector('#cards');document.querySelector('#savedCount').textContent=saved.size;
 pantry.forEach(({group,items})=>{const title=document.createElement('div');title.className='ingredient-group-title';title.textContent=group;ingredientsEl.append(title);if(group.startsWith('Приправы')){const note=document.createElement('div');note.className='seasoning-note';note.textContent='Не влияют на подбор: добавьте те, что есть дома.';ingredientsEl.append(note)}items.forEach(([emoji,name])=>{const seasoning=group.startsWith('Приправы');const set=seasoning?selectedSeasonings:selected;const label=document.createElement('label');label.className='ingredient';label.innerHTML=`<input type="checkbox" value="${name}" ${set.has(name)?'checked':''}><span class="ing-emoji">${emoji}</span><span>${name}</span>`;label.querySelector('input').addEventListener('change',e=>{e.target.checked?set.add(name):set.delete(name);updateSelection();render()});ingredientsEl.append(label)})});
 recipes.forEach(r=>{if(!r.kind)r.kind='Мясное'});
